@@ -18,7 +18,7 @@ void solveQuadraticEquation(double a, double b, double c)
 
     if (radicand < 0)
     {
-        cout << "No Results for: ";
+        cout << "Keine Ergebnisse fuer: ";
         outputQuadraticEquation(a, b, c);
         cout << endl;
     }
@@ -26,18 +26,18 @@ void solveQuadraticEquation(double a, double b, double c)
     {
         double x = -(p / 2);
 
-        cout << "Only one result for: ";
+        cout << "Nur ein Ergebnis fuer: ";
         outputQuadraticEquation(a, b, c);
-        cout << " with x = " << x << endl;
+        cout << " mit x = " << x << endl;
     }
     else
     {
         double x1 = -(p / 2) + sqrt(radicand);
         double x2 = -(p / 2) - sqrt(radicand);
 
-        cout << "Two Result for: ";
+        cout << "Zwei Ergebnisse fuer: ";
         outputQuadraticEquation(a, b, c);
-        cout << " with x1 = " << x1 << " and x2 = " << x2 << endl;
+        cout << " mit x1 = " << x1 << " und x2 = " << x2 << endl;
     }
 }
 
@@ -58,9 +58,9 @@ int main(int argc, char *argv[])
 
     cout.precision(2);
 
-    a = getInput("Value for a: ");
-    b = getInput("Value for b: ");
-    c = getInput("Value for c: ");
+    a = getInput("Wert fuer a: ");
+    b = getInput("Wert fuer b: ");
+    c = getInput("Wert fuer c: ");
 
     solveQuadraticEquation(a, b, c);
 
