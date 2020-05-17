@@ -6,7 +6,7 @@ using namespace std;
 
 void outputQuadraticEquation(double a, double b, double c)
 {
-    cout << a << "x² + " << b << "x + " << c << " = 0";
+    cout << a << "x^2 + " << b << "x + " << c << " = 0";
 }
 
 void solveQuadraticEquation(double a, double b, double c)
@@ -41,13 +41,28 @@ void solveQuadraticEquation(double a, double b, double c)
     }
 }
 
+double getInput(string question)
+{
+    string input;
+
+    cout << question;
+    getline(cin, input);
+
+    return stod(input);
+}
+
 int main(int argc, char *argv[])
 {
-    double a = 10;
-    double b = 15;
-    double c = 2.5;
+    double a, b, c;
+    string inputString;
 
     cout.precision(2);
 
+    a = getInput("Value for a: ");
+    b = getInput("Value for b: ");
+    c = getInput("Value for c: ");
+
     solveQuadraticEquation(a, b, c);
+
+    return 0;
 }
