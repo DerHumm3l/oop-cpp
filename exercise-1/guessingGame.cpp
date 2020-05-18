@@ -20,6 +20,13 @@ int main(int argc, char *argv[])
 
     maximum = getInput("Geben Sie eine ganze Zahl groesser 1 ein: ");
 
+    if (maximum <= 0)
+    {
+        cout << "Die eingegebene Zahl ist nicht groesser 0" << endl;
+
+        return 1;
+    }
+
     number = rand() % (maximum + 1);
 
     cout << "\n"
