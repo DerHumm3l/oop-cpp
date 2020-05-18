@@ -11,8 +11,13 @@ int getGreatestCommonDivisor(int a, int b)
     return getGreatestCommonDivisor(b, a % b);
 }
 
-void normalize(int numerator, int denominator)
+void reduce(int numerator, int denominator)
 {
+    int gcd = getGreatestCommonDivisor(numerator, denominator);
+
+    cout << "Der Bruch " << numerator << "/" << denominator
+         << " laesst sich auf " << numerator / gcd << "/"
+         << denominator / gcd << " kuerzen" << endl;
 }
 
 int main(int argc, char *argv[])
