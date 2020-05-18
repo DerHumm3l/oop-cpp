@@ -73,7 +73,7 @@ You also have to create a `<exercise>\bin` folder, because the compiler is not a
 
 ### Running
 
-You need to start VS Code from the Developer Command Prompt. If it was not started from the Developer Command Prompt the compiler will not be found and compiling is not possible. If you want to debug, just press F5 and the active file will be compilied and debugged. But there is a issue with user input, when debugging inside VS Code. You should compile inside VS Code and test it with a additional command prompt outside of VS Code for now.
+You need to start VS Code from the Developer Command Prompt. If it was not started from the Developer Command Prompt the compiler will not be found and compiling is not possible. If you want to debug, just press F5 and the active file will be compilied and debugged. All necessary files, including `.exe` file, will be created in `<exercise>\bin`. But there is a issue with user input, when debugging inside VS Code. You should compile inside VS Code and test it with a additional command prompt outside of VS Code for now. 
 
 ## Authors
 
