@@ -4,6 +4,8 @@
 
 using namespace std;
 
+// Testcomment 2
+
 int getInput(string question)
 {
     string input;
