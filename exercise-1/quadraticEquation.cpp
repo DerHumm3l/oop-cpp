@@ -4,8 +4,6 @@
 
 using namespace std;
 
-// Testcomment
-
 void outputQuadraticEquation(double a, double b, double c)
 {
     cout << a << "x^2 + " << b << "x + " << c << " = 0";
