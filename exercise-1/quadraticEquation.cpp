@@ -11,6 +11,11 @@ void outputQuadraticEquation(double a, double b, double c)
 
 void solveQuadraticEquation(double a, double b, double c)
 {
+    if(a == 0){
+    cout << "Das ist keine quadratische GLeichung" << endl;
+    return 1;
+    }
+
     double p = b / a;
     double q = c / a;
 
