@@ -1,21 +1,22 @@
 #include <iostream>
 #include <string>
+#include <cstdlib>
 
 using namespace std;
 
-void askForNumber(int number)
+bool askForNumber(int number)
 {
 }
 
-void askForNumberIsGreater(int number)
+bool askForNumberIsGreater(int number)
 {
 }
 
-void askForNumberIsLess(int number)
+bool askForNumberIsLess(int number)
 {
 }
 
-void askForNumberBetween(int lowerLimit, int upperLimit)
+bool askForNumberBetween(int lowerLimit, int upperLimit)
 {
 }
 
@@ -29,6 +30,11 @@ int getInput(string question)
     return stoi(input);
 }
 
+int getRandomNumber(int lowerLimit, int upperLimit)
+{
+    return rand() % (upperLimit - lowerLimit) + lowerLimit;
+}
+
 int main(int argc, char *argv[])
 {
     int lowerLimit, upperLimit, guess;
@@ -39,4 +45,38 @@ int main(int argc, char *argv[])
 
     lowerLimit = getInput("Geben Sie eine Zahl fuer die untere Grenze ein: ");
     upperLimit = getInput("Geben Sie eine Zahl fuer die obere Grenze ein: ");
+
+    cout << "Ab jetzt versucht der Computer die Zahl zu ermitteln." << endl;
+
+    do
+    {
+        int upperLimitSubset, lessNumberInSubset, greaterNumberInSubset;
+        bool isBetween, isLess, isGreater;
+
+        upperLimitSubset = getRandomNumber(lowerLimit, upperLimit);
+        isBetween = askForNumberBetween(lowerLimit, upperLimitSubset);
+
+        if (isBetween)
+        {
+            upperLimit = upperLimitSubset;
+        }
+
+        lessNumberInSubset = getRandomNumber(lowerLimit, upperLimit);
+        isLess = askForNumberIsLess(lessNumberInSubset);
+
+        if (isLess)
+        {
+            upperLimit = lessNumberInSubset - 1;
+        }
+
+        greaterNumberInSubset = getRandomNumber(lowerLimit, upperLimit);
+        isGreater = askForNumberIsGreater(greaterNumberInSubset);
+
+        if (isGreater)
+        {
+            lowerLimit = greaterNumberInSubset + 1;
+        }
+    } while (!askForNumber(getRandomNumber(lowerLimit, upperLimit)));
+
+    return 0;
 }
