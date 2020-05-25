@@ -64,6 +64,7 @@ int getRandomNumber(int lowerLimit, int upperLimit)
 int main(int argc, char *argv[])
 {
     int lowerLimit, upperLimit, guess;
+    int questionCounter = 0;
 
     cout << "Sie muessen sich eine beliebige ganze Zahl ausdenken,"
          << " die der Computer durch Ja- und Nein-Fragen versucht herauszufinden."
@@ -79,6 +80,7 @@ int main(int argc, char *argv[])
         int upperLimitSubset, lessNumberInSubset, greaterNumberInSubset;
         bool isBetween, isLess, isGreater;
 
+        questionCounter++;
         upperLimitSubset = getRandomNumber(lowerLimit, upperLimit);
         isBetween = askForNumberBetween(lowerLimit, upperLimitSubset);
 
@@ -87,6 +89,7 @@ int main(int argc, char *argv[])
             upperLimit = upperLimitSubset;
         }
 
+        questionCounter++;
         lessNumberInSubset = getRandomNumber(lowerLimit, upperLimit);
         isLess = askForNumberIsLess(lessNumberInSubset);
 
@@ -95,6 +98,7 @@ int main(int argc, char *argv[])
             upperLimit = lessNumberInSubset - 1;
         }
 
+        questionCounter++;
         greaterNumberInSubset = getRandomNumber(lowerLimit, upperLimit);
         isGreater = askForNumberIsGreater(greaterNumberInSubset);
 
@@ -102,7 +106,14 @@ int main(int argc, char *argv[])
         {
             lowerLimit = greaterNumberInSubset + 1;
         }
+
+        questionCounter++;
     } while (!askForNumber(getRandomNumber(lowerLimit, upperLimit)));
+
+    cout << "Die Zahl " << lowerLimit << " wurde mit "
+         << questionCounter << " Fragen vom Computer ermittelt. Enter zum beenden.";
+
+    getchar();
 
     return 0;
 }
