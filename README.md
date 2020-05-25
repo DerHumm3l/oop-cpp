@@ -4,7 +4,7 @@ This project contains the exercises for "Objektorientierte Programmierung mit C+
 
 ## Getting Started
 
-These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
+These instructions will get you a copy of the project up and running on your local machine for development purposes.
 
 ### Prerequisites
 
@@ -29,7 +29,7 @@ After setting up VS Code to compile and debug the C++ code, the `launch.json` an
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
             "environment": [],
-            "externalConsole": false,
+            "externalConsole": true,
             "preLaunchTask": "shell: cl.exe build active file"
         }
     ]
@@ -73,7 +73,7 @@ You also have to create a `<exercise>\bin` folder, because the compiler is not a
 
 ### Running
 
-You need to start VS Code from the Developer Command Prompt. If it was not started from the Developer Command Prompt the compiler will not be found and compiling is not possible. If you want to debug, just press F5 and the active file will be compilied and debugged. But there is a issue with user input, when debugging inside VS Code. You should compile inside VS Code and test it with a additional command prompt outside of VS Code for now.
+You need to start VS Code from the Developer Command Prompt. If it was not started from the Developer Command Prompt the compiler will not be found and compiling is not possible. If you want to debug, just press F5 and the active file will be compilied and debugged. All necessary files, including `.exe` file, will be created in `<exercise>\bin`.
 
 ## Authors
 
