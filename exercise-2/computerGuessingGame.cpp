@@ -6,6 +6,24 @@ using namespace std;
 
 bool askForNumber(int number)
 {
+    int inputNumber;
+    bool questionSuccessful = false;
+
+    do
+    {
+        inputNumber = getInput("Ist deine Zahl " + to_string(number) + "? (1 fuer ja, 0 fuer nein)");
+
+        if (inputNumber == 1 || inputNumber == 0)
+        {
+            questionSuccessful = true;
+        }
+        else
+        {
+            cout << "Falsche Eingabe, bitte erenut versuchen." << endl;
+        }
+    } while (!questionSuccessful);
+
+    return (bool)inputNumber;
 }
 
 bool askForNumberIsGreater(int number)
