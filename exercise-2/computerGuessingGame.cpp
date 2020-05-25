@@ -4,14 +4,14 @@
 
 using namespace std;
 
-bool askForNumber(int number)
+bool askUser(string question)
 {
     int inputNumber;
     bool questionSuccessful = false;
 
     do
     {
-        inputNumber = getInput("Ist deine Zahl " + to_string(number) + "? (1 fuer ja, 0 fuer nein)");
+        inputNumber = getInput(question);
 
         if (inputNumber == 1 || inputNumber == 0)
         {
@@ -24,6 +24,11 @@ bool askForNumber(int number)
     } while (!questionSuccessful);
 
     return (bool)inputNumber;
+}
+
+bool askForNumber(int number)
+{
+    return askUser("Ist deine Zahl " + to_string(number) + "? (1 fuer ja, 0 fuer nein)");
 }
 
 bool askForNumberIsGreater(int number)
