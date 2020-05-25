@@ -19,7 +19,7 @@ bool askUser(string question)
         }
         else
         {
-            cout << "Falsche Eingabe, bitte erenut versuchen." << endl;
+            cout << "Falsche Eingabe, bitte erneut versuchen." << endl;
         }
     } while (!questionSuccessful);
 
