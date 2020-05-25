@@ -58,7 +58,7 @@ bool askForNumberBetween(int lowerLimit, int upperLimit)
 
 int getRandomNumber(int lowerLimit, int upperLimit)
 {
-    return rand() % (upperLimit - lowerLimit) + lowerLimit;
+    return rand() % (upperLimit - lowerLimit) + lowerLimit + 1;
 }
 
 int main(int argc, char *argv[])
@@ -88,6 +88,19 @@ int main(int argc, char *argv[])
         {
             upperLimit = upperLimitSubset;
         }
+        else
+        {
+            lowerLimit = upperLimitSubset + 1;
+        }
+
+        if (lowerLimit == upperLimit)
+        {
+            questionCounter++;
+            if (askForNumber(lowerLimit))
+            {
+                break;
+            }
+        }
 
         questionCounter++;
         lessNumberInSubset = getRandomNumber(lowerLimit, upperLimit);
@@ -97,6 +110,19 @@ int main(int argc, char *argv[])
         {
             upperLimit = lessNumberInSubset - 1;
         }
+        else
+        {
+            lowerLimit = lessNumberInSubset;
+        }
+
+        if (lowerLimit == upperLimit)
+        {
+            questionCounter++;
+            if (askForNumber(lowerLimit))
+            {
+                break;
+            }
+        }
 
         questionCounter++;
         greaterNumberInSubset = getRandomNumber(lowerLimit, upperLimit);
@@ -105,6 +131,10 @@ int main(int argc, char *argv[])
         if (isGreater)
         {
             lowerLimit = greaterNumberInSubset + 1;
+        }
+        else
+        {
+            upperLimit = greaterNumberInSubset;
         }
 
         questionCounter++;
