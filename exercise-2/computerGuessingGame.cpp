@@ -4,6 +4,16 @@
 
 using namespace std;
 
+int getInput(string question)
+{
+    string input;
+
+    cout << question;
+    getline(cin, input);
+
+    return stoi(input);
+}
+
 bool askUser(string question)
 {
     int inputNumber;
@@ -44,16 +54,6 @@ bool askForNumberIsLess(int number)
 bool askForNumberBetween(int lowerLimit, int upperLimit)
 {
     return askUser("Liegt deine Zahl zwischen " + to_string(lowerLimit) + " und " + to_string(upperLimit) + "? - Inklusive der Grenzen  (1 fuer ja, 0 fuer nein)");
-}
-
-int getInput(string question)
-{
-    string input;
-
-    cout << question;
-    getline(cin, input);
-
-    return stoi(input);
 }
 
 int getRandomNumber(int lowerLimit, int upperLimit)
