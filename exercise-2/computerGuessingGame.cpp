@@ -33,14 +33,17 @@ bool askForNumber(int number)
 
 bool askForNumberIsGreater(int number)
 {
+    return askUser("Ist deine Zahl groesser als " + to_string(number) + "?  (1 fuer ja, 0 fuer nein)");
 }
 
 bool askForNumberIsLess(int number)
 {
+    return askUser("Ist deine Zahl kleiner als " + to_string(number) + "?  (1 fuer ja, 0 fuer nein)");
 }
 
 bool askForNumberBetween(int lowerLimit, int upperLimit)
 {
+    return askUser("Liegt deine Zahl zwischen " + to_string(lowerLimit) + " und " + to_string(upperLimit) + "? - Inklusive der Grenzen  (1 fuer ja, 0 fuer nein)");
 }
 
 int getInput(string question)
