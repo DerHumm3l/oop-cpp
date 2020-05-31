@@ -1,5 +1,6 @@
 #include <vector>
 #include <iostream>
+#include <cmath>
 
 using namespace std;
 
@@ -64,7 +65,7 @@ double dotProduct(const vector<double> &v1, const vector<double> &v2)
     return product;
 }
 
-vector<double> product(const vector<double> &v, double f)
+vector<double> scalarVectorProduct(const vector<double> &v, double f)
 {
     vector<double> scalarVector(v);
 
@@ -78,7 +79,14 @@ vector<double> product(const vector<double> &v, double f)
 
 double norm(vector<double> &v)
 {
-    return 1.0;
+    double radicand = 0;
+
+    for (double elem : v)
+    {
+        radicand += pow(elem, 2);
+    }
+
+    return sqrt(radicand);
 }
 
 void normalize(const vector<double> &v)
@@ -91,8 +99,8 @@ int main(int argc, char *argv[])
     vector<double> vNegative{-3.4, -6.77, -4, -12.2, -1.778};
     vector<double> vEmpty;
 
-    double maxValue1 = max(vPositive);
-    double maxValue2 = max(vNegative);
+    double maxValuePositive = max(vPositive);
+    double maxValueNegative = max(vNegative);
     double maxValueEmpty = max(vEmpty);
 
     bool vPositiveTest = allPositive(vPositive);
@@ -102,4 +110,12 @@ int main(int argc, char *argv[])
     double product = dotProduct(vPositive, vNegative);
     double productEmpty1 = dotProduct(vPositive, vEmpty);
     double productEmpty2 = dotProduct(vEmpty, vPositive);
+
+    vector<double> scalarVectorProductPositive = scalarVectorProduct(vPositive, 5);
+    vector<double> scalarVectorProductNegative = scalarVectorProduct(vNegative, -5);
+    vector<double> scalarVectorProductEmpty = scalarVectorProduct(vEmpty, 5);
+
+    double normPositive = norm(vPositive);
+    double normNegative = norm(vNegative);
+    double normEmpty = norm(vEmpty);
 }
