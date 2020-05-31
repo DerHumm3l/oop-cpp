@@ -1,6 +1,7 @@
 #include <vector>
 #include <iostream>
 #include <cmath>
+#include <string>
 
 using namespace std;
 
@@ -96,33 +97,117 @@ void normalize(vector<double> &v)
     v = scalarVectorProduct(v, inverse);
 }
 
+void printVector(vector<double> v, string vectorName)
+{
+    cout << vectorName << " - [";
+
+    for (int i = 0; i < v.size(); i++)
+    {
+        if (i != 0)
+        {
+            cout << ",";
+        }
+
+        cout << " " << v[i];
+    }
+
+    cout << " ]" << endl;
+}
+
+vector<double> getUserVector(int size, int numberOfVector)
+{
+    vector<double> v(size);
+
+    for (int i = 0; i < size; i++)
+    {
+        double value = 0;
+
+        cout << "Geben Sie den Wert des " << i + 1 << ". Elementes fuer Vektor "
+             << numberOfVector << " ein: ";
+        cin >> value;
+
+        v[i] = value;
+    }
+
+    return v;
+}
+
 int main(int argc, char *argv[])
 {
-    vector<double> vPositive{4.5, 5.5, 1.333, 10, 11.565};
-    vector<double> vNegative{-3.4, -6.77, -4, -12.2, -1.778};
-    vector<double> vEmpty;
+    int size = 0;
 
-    double maxValuePositive = max(vPositive);
-    double maxValueNegative = max(vNegative);
-    double maxValueEmpty = max(vEmpty);
+    cout << "Geben Sie die Anzahl der Elemente in den beiden Vektoren ein: ";
+    cin >> size;
 
-    bool vPositiveTest = allPositive(vPositive);
-    bool vNegativeTest = allPositive(vNegative);
-    bool vEmptyTest = allPositive(vEmpty);
+    vector<double> userVector1 = getUserVector(size, 1);
+    vector<double> userVector2 = getUserVector(size, 2);
 
-    double product = dotProduct(vPositive, vNegative);
-    double productEmpty1 = dotProduct(vPositive, vEmpty);
-    double productEmpty2 = dotProduct(vEmpty, vPositive);
+    cout << endl;
+    printVector(userVector1, "vector 1");
+    printVector(userVector2, "vector 2");
 
-    vector<double> scalarVectorProductPositive = scalarVectorProduct(vPositive, 5);
-    vector<double> scalarVectorProductNegative = scalarVectorProduct(vNegative, -5);
-    vector<double> scalarVectorProductEmpty = scalarVectorProduct(vEmpty, 5);
+    cout << endl;
+    cout << "Aufruf max(vector 1)..." << endl;
+    double maxValue1 = max(userVector1);
+    cout << "Aufruf ergibt: " << maxValue1 << endl
+         << endl;
 
-    double normPositive = norm(vPositive);
-    double normNegative = norm(vNegative);
-    double normEmpty = norm(vEmpty);
+    cout << "Aufruf max(vector 2)..." << endl;
+    double maxValue2 = max(userVector2);
+    cout << "Aufruf ergibt: " << maxValue2 << endl
+         << endl;
 
-    normalize(vPositive);
-    normalize(vNegative);
-    normalize(vEmpty);
+    cout << endl;
+    cout << "Aufruf allPositive(vector 1)..." << endl;
+    bool test1 = allPositive(userVector1);
+    cout << "Aufruf ergibt: " << test1 << endl
+         << endl;
+
+    cout << "Aufruf allPositive(vector 2)..." << endl;
+    bool test2 = allPositive(userVector2);
+    cout << "Aufruf ergibt: " << test2 << endl
+         << endl;
+
+    cout << endl;
+    cout << "Aufruf dotProduct(vector 1, vector 2)..." << endl;
+    double product = dotProduct(userVector1, userVector2);
+    cout << "Aufruf ergibt: " << product << endl
+         << endl;
+
+    cout << endl;
+    cout << "Aufruf scalarVectorProduct(vector 1, 5)" << endl;
+    vector<double> scalarVectorProduct1 = scalarVectorProduct(userVector1, 5);
+    cout << "Aufruf ergibt: ";
+    printVector(scalarVectorProduct1, "vector 1 * 5");
+    cout << endl;
+
+    cout << "Aufruf scalarVectorProduct(vector 2, 5)" << endl;
+    vector<double> scalarVectorProduct2 = scalarVectorProduct(userVector2, 5);
+    cout << "Aufruf ergibt: ";
+    printVector(scalarVectorProduct2, "vector 2 * 5");
+    cout << endl;
+
+    cout << endl;
+    cout << "Aufruf norm(vector 1)..." << endl;
+    double norm1 = norm(userVector1);
+    cout << "Aufruf ergibt: " << norm1 << endl
+         << endl;
+
+    cout << "Aufruf norm(vector 2)..." << endl;
+    double norm2 = norm(userVector2);
+    cout << "Aufruf ergibt: " << norm2 << endl
+         << endl;
+
+    cout << endl;
+    cout << "Aufruf normalize(vector 1)..." << endl;
+    normalize(userVector1);
+    cout << "Aufruf ergibt: ";
+    printVector(userVector1, "vector 1 normalized");
+    cout << endl;
+
+    cout << "Aufruf normalize(vector 2)..." << endl;
+    normalize(userVector2);
+    cout << "Aufruf ergibt: ";
+    printVector(userVector2, "vector 2 normalized");
+    cout << endl;
 }
