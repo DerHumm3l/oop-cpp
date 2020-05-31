@@ -77,7 +77,7 @@ vector<double> scalarVectorProduct(const vector<double> &v, double f)
     return scalarVector;
 }
 
-double norm(vector<double> &v)
+double norm(const vector<double> &v)
 {
     double radicand = 0;
 
@@ -89,8 +89,11 @@ double norm(vector<double> &v)
     return sqrt(radicand);
 }
 
-void normalize(const vector<double> &v)
+void normalize(vector<double> &v)
 {
+    double inverse = 1 / norm(v);
+
+    v = scalarVectorProduct(v, inverse);
 }
 
 int main(int argc, char *argv[])
@@ -118,4 +121,8 @@ int main(int argc, char *argv[])
     double normPositive = norm(vPositive);
     double normNegative = norm(vNegative);
     double normEmpty = norm(vEmpty);
+
+    normalize(vPositive);
+    normalize(vNegative);
+    normalize(vEmpty);
 }
