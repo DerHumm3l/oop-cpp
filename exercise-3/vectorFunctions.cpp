@@ -66,7 +66,14 @@ double dotProduct(const vector<double> &v1, const vector<double> &v2)
 
 vector<double> product(const vector<double> &v, double f)
 {
-    return vector<double>{1.0};
+    vector<double> scalarVector(v);
+
+    for (double &elem : scalarVector)
+    {
+        elem *= f;
+    }
+
+    return scalarVector;
 }
 
 double norm(vector<double> &v)
