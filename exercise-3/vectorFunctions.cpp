@@ -174,17 +174,25 @@ int main(int argc, char *argv[])
     cout << "Aufruf ergibt: " << product << endl
          << endl;
 
+    double factor1;
+    cout << "Geben Sie eine Zahl ein, mit der Vektor 1 multipliziert werden soll: ";
+    cin >> factor1;
+
     cout << endl;
-    cout << "Aufruf scalarVectorProduct(vector 1, 5)" << endl;
-    vector<double> scalarVectorProduct1 = scalarVectorProduct(userVector1, 5);
+    cout << "Aufruf scalarVectorProduct(vector 1, " << factor1 << ")" << endl;
+    vector<double> scalarVectorProduct1 = scalarVectorProduct(userVector1, factor1);
     cout << "Aufruf ergibt: ";
-    printVector(scalarVectorProduct1, "vector 1 * 5");
+    printVector(scalarVectorProduct1, "vector 1 * " + to_string(factor1) + "");
     cout << endl;
 
-    cout << "Aufruf scalarVectorProduct(vector 2, 5)" << endl;
-    vector<double> scalarVectorProduct2 = scalarVectorProduct(userVector2, 5);
+    double factor2;
+    cout << "Geben Sie eine Zahl ein, mit der Vektor 2 multipliziert werden soll: ";
+    cin >> factor2;
+
+    cout << "Aufruf scalarVectorProduct(vector 2, " << factor2 << ")" << endl;
+    vector<double> scalarVectorProduct2 = scalarVectorProduct(userVector2, factor2);
     cout << "Aufruf ergibt: ";
-    printVector(scalarVectorProduct2, "vector 2 * 5");
+    printVector(scalarVectorProduct2, "vector 2 * " + to_string(factor2) + "");
     cout << endl;
 
     cout << endl;
@@ -210,4 +218,14 @@ int main(int argc, char *argv[])
     cout << "Aufruf ergibt: ";
     printVector(userVector2, "vector 2 normalized");
     cout << endl;
+
+    cout << endl;
+    cout << "Enter zum Beenden";
+
+    getchar();
+
+    if (cin.get() == '\n')
+    {
+        return 0;
+    }
 }
