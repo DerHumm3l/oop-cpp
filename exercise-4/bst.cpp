@@ -34,7 +34,7 @@ void list(node *&root)
         list(root->leftChild);
     }
 
-    cout << "Ich bin Knoten mit dem Wert " << root->key << endl;
+    cout << root->key << endl;
 
     if (root->rightChild != nullptr)
     {
@@ -60,17 +60,31 @@ void free(node *&root)
 
 int main(int argc, char *argv[])
 {
+    string input;
     node *root = NULL;
 
-    insert(root, "aaa");
-    insert(root, "bbb");
-    insert(root, "ccc");
-    insert(root, "ddd");
-    insert(root, "eee");
+    do
+    {
+        cout << "Geben Sie eine beliebige Zeichenkette ein ('.' zum Beenden): ";
+        getline(cin, input);
 
+        if (input == ".")
+        {
+            break;
+        }
+        else
+        {
+            insert(root, input);
+        }
+    } while (true);
+
+    cout << endl
+         << "Sortierte Liste" << endl;
     list(root);
 
     free(root);
 
+    cout << endl
+         << "Enter zum beenden";
     getchar();
 }
