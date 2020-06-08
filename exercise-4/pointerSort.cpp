@@ -15,11 +15,22 @@ vector<string *> createPointerList(vector<string> &list)
     return pointerList;
 }
 
-void sort(vector<string *> &list)
+void insertionSort(vector<string *> &pointerList)
 {
+    for (int i = 0; i < pointerList.size(); i++)
+    {
+        string *elem = pointerList[i];
+        int j = i;
+        while (j > 0 && *pointerList[j - 1] > *elem)
+        {
+            pointerList[j] = pointerList[j - 1];
+            j--;
+        }
+        pointerList[j] = elem;
+    }
 }
 
-void print(vector<string *> &list)
+void print(vector<string *> &pointerList)
 {
 }
 
@@ -30,6 +41,6 @@ int main(int argc, char *argv[])
     vector<string *>
         pointerList = createPointerList(list);
 
-    sort(pointerList);
+    insertionSort(pointerList);
     print(pointerList);
 }
