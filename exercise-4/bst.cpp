@@ -27,12 +27,35 @@ void insert(node *&root, string key)
     }
 }
 
-void list(node &root)
+void list(node *&root)
 {
+    if (root->leftChild != nullptr)
+    {
+        list(root->leftChild);
+    }
+
+    cout << "Ich bin Knoten mit dem Wert " << root->key << endl;
+
+    if (root->rightChild != nullptr)
+    {
+        list(root->rightChild);
+    }
 }
 
-void free(node &root)
+void free(node *&root)
 {
+    if (root->leftChild != nullptr)
+    {
+        free(root->leftChild);
+    }
+    if (root->rightChild != nullptr)
+    {
+        free(root->rightChild);
+    }
+
+    root->leftChild = NULL;
+    root->rightChild = NULL;
+    delete root;
 }
 
 int main(int argc, char *argv[])
@@ -41,4 +64,13 @@ int main(int argc, char *argv[])
 
     insert(root, "aaa");
     insert(root, "bbb");
+    insert(root, "ccc");
+    insert(root, "ddd");
+    insert(root, "eee");
+
+    list(root);
+
+    free(root);
+
+    getchar();
 }
