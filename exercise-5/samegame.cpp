@@ -26,12 +26,14 @@ struct gameBoard
 
 void initTiles(vector<tile> &gameTiles)
 {
-    for(tile &gameTile : gameTiles){
+    for (tile &gameTile : gameTiles)
+    {
         gameTile.backgroundColor = color(rand() % (magenta - black) + red);
     }
 }
 
-vector<tile> generateColumn(const int &size){
+vector<tile> generateColumn(const int &size)
+{
     tile gameTile;
 
     vector<tile> column(size, gameTile);
@@ -43,7 +45,8 @@ vector<tile> generateColumn(const int &size){
 
 void initColumns(gameBoard &board, const int &rows, const int &columns)
 {
-    for(int i = 0; i < columns; i++){
+    for (int i = 0; i < columns; i++)
+    {
         board.tiles.push_back(generateColumn(columns));
     }
 }
@@ -64,7 +67,7 @@ void printGameBoard(const gameBoard &board)
 
 int main(int argc, char *argv[])
 {
-    gameBoard board = generateGameBoard(9,9);
+    gameBoard board = generateGameBoard(9, 9);
 
     getchar();
 
