@@ -22,6 +22,8 @@ struct tile
 struct gameBoard
 {
     vector<vector<tile>> tiles;
+    unsigned int numberOfRows;
+    unsigned int numberOfColumns;
 };
 
 void initTiles(vector<tile> &gameTiles)
@@ -43,31 +45,73 @@ vector<tile> generateColumn(const int &size)
     return column;
 }
 
-void initColumns(gameBoard &board, const int &rows, const int &columns)
+void initColumns(gameBoard &board)
 {
-    for (int i = 0; i < columns; i++)
+    for (int i = 0; i < board.numberOfColumns; i++)
     {
-        board.tiles.push_back(generateColumn(columns));
+        board.tiles.push_back(generateColumn(board.numberOfRows));
+        // board.tiles.push_back(generateColumn(columns));
     }
 }
 
 gameBoard generateGameBoard(int rows, int columns)
 {
     gameBoard board;
+    board.numberOfRows = rows;
+    board.numberOfColumns = columns;
 
-    initColumns(board, rows, columns);
+    initColumns(board);
 
     return board;
 }
 
+string getColor(tile gameTile)
+{
+    return "\033[41m \033[0m";
+}
+
+void printRowSeparator(const gameBoard &board)
+{
+    for (int i = 0; i < board.numberOfColumns; i++)
+    {
+        cout << "+-";
+    }
+
+    cout << "+" << endl;
+}
+
+void printRow(const gameBoard &board, unsigned int rowIndex)
+{
+    for (int j = 0; j < board.numberOfColumns; j++)
+    {
+        cout << "|" << getColor(board.tiles[j][rowIndex]);
+    }
+
+    cout << "|" << endl;
+}
+
 void printGameBoard(const gameBoard &board)
 {
-    cout << "\033[41mHello\033[0m";
+    printRowSeparator(board);
+
+    for (int i = 0; i < board.numberOfRows; i++)
+    {
+        printRow(board, i);
+
+        printRowSeparator(board);
+    }
 }
 
 int main(int argc, char *argv[])
 {
     gameBoard board = generateGameBoard(9, 9);
+
+    printGameBoard(board);
+
+    getchar();
+
+    cout << "test 2" << endl;
+    cout << "\033[41mHello\033[0m";
 
     getchar();
 
