@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <cstdlib>
+#include <string>
 
 using namespace std;
 
@@ -67,7 +68,7 @@ gameBoard generateGameBoard(int rows, int columns)
 
 string getColor(tile gameTile)
 {
-    return "\033[41m \033[0m";
+    return "\033[" + to_string(gameTile.backgroundColor) + "m \033[0m";
 }
 
 void printRowSeparator(const gameBoard &board)
@@ -104,7 +105,7 @@ void printGameBoard(const gameBoard &board)
 
 int main(int argc, char *argv[])
 {
-    gameBoard board = generateGameBoard(9, 9);
+    gameBoard board = generateGameBoard(15, 20);
 
     printGameBoard(board);
 
