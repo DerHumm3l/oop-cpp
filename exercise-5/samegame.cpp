@@ -119,14 +119,67 @@ void printGameBoard(const gameBoard &board)
     }
 }
 
-int changeGameBoard(gameBoard &board, int columnIndex, int rowIndex)
+bool checkIndices(const gameBoard &board, const int &columnIndex, const int &rowIndex)
 {
-    return 0;
+    if (columnIndex >= board.numberOfColumns || rowIndex >= board.numberOfRows)
+    {
+        return false;
+    }
+    else if (board.tiles[columnIndex][rowIndex].backgroundColor == black)
+    {
+        return false;
+    }
+    else
+    {
+        return true;
+    }
 }
 
-bool checkIndices(const gameBoard &board, int columnIndex, int rowIndex)
+vector<tile *> getAdjacentColorTiles(gameBoard &board, const int &columnIndex, const int &rowIndex, const color tileColor)
 {
-    return true;
+    vector<tile *> colorTiles;
+
+    if (checkIndices(board, columnIndex, rowIndex))
+    {
+        if (board.tiles[columnIndex][rowIndex].backgroundColor == tileColor)
+        {
+            colorTiles.push_back(&board.tiles[columnIndex][rowIndex]);
+
+            // Get all adjacent tiles
+
+            // intersect adjacent tiles and colorTiles
+
+            // call getAdjacentColorTiles for intersection
+
+            // Adjazente Aufrufe
+            // Aufpassen dass nach tiles[columnIndex+1] nicht beim
+            // rekursiven aufruf dann wieder tiles[columnIndex-1] aufgerufen wird
+            // sonst endlosschleife
+        }
+        return colorTiles;
+    }
+    else
+    {
+        return colorTiles;
+    }
+}
+
+int changeGameBoard(gameBoard &board, const int &columnIndex, const int &rowIndex)
+{
+    if (checkIndices(board, columnIndex, rowIndex))
+    {
+        vector<tile *> adjacentColorTiles = getAdjacentColorTiles(board, columnIndex, rowIndex, board.tiles[columnIndex][rowIndex].backgroundColor);
+
+        // update GameBoard
+        // calculate Points
+        int points = 10;
+
+        return points;
+    }
+    else
+    {
+        return 0;
+    }
 }
 
 int applyInput(const string &input, gameBoard &board)
@@ -141,16 +194,15 @@ int applyInput(const string &input, gameBoard &board)
             int columnIndex = (int)'a' - (int)columnIndexChar;
             int rowIndex = stoi(rowIndexNumber);
 
-            if (checkIndices(board, columnIndex, rowIndex))
-            {
-                changeGameBoard(board, columnIndex, rowIndex);
-                // add Points, etc...
+            int points = changeGameBoard(board, columnIndex, rowIndex);
 
-                return 0;
+            if (points == 0)
+            {
+                return -2;
             }
             else
             {
-                return -2; // Not appliable
+                return 0;
             }
         }
         else
