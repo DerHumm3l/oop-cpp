@@ -4,6 +4,7 @@
 #include <string>
 #include <algorithm>
 #include <cctype>
+#include <iterator>
 
 using namespace std;
 
@@ -20,6 +21,8 @@ enum color
 struct tile
 {
     color backgroundColor;
+    int columnPosition;
+    int rowPosition;
 };
 
 struct gameBoard
@@ -29,30 +32,32 @@ struct gameBoard
     unsigned int numberOfColumns;
 };
 
-void initTiles(vector<tile> &gameTiles)
+void initTiles(vector<tile> &gameTiles, int &columnIndex)
 {
-    for (tile &gameTile : gameTiles)
+    for (int rowIndex = 0; rowIndex < gameTiles.size(); rowIndex++)
     {
-        gameTile.backgroundColor = color(rand() % (magenta - black) + red);
+        gameTiles[rowIndex].backgroundColor = color(rand() % (magenta - black) + red);
+        gameTiles[rowIndex].rowPosition = rowIndex;
+        gameTiles[rowIndex].columnPosition = columnIndex;
     }
 }
 
-vector<tile> generateColumn(const int &size)
+vector<tile> generateColumn(const int &size, int &columnIndex)
 {
     tile gameTile;
 
     vector<tile> column(size, gameTile);
 
-    initTiles(column);
+    initTiles(column, columnIndex);
 
     return column;
 }
 
 void initColumns(gameBoard &board)
 {
-    for (int i = 0; i < board.numberOfColumns; i++)
+    for (int columnIndex = 0; columnIndex < board.numberOfColumns; columnIndex++)
     {
-        board.tiles.push_back(generateColumn(board.numberOfRows));
+        board.tiles.push_back(generateColumn(board.numberOfRows, columnIndex));
     }
 }
 
@@ -135,33 +140,73 @@ bool checkIndices(const gameBoard &board, const int &columnIndex, const int &row
     }
 }
 
-vector<tile *> getAdjacentColorTiles(gameBoard &board, const int &columnIndex, const int &rowIndex, const color tileColor)
+vector<tile *> getAdjacentTiles(gameBoard &board, const int &columnIndex, const int &rowIndex)
 {
-    vector<tile *> colorTiles;
+    vector<tile *> tiles;
 
+    if (rowIndex != 0)
+    {
+        tiles.push_back(&board.tiles[columnIndex][rowIndex - 1]);
+    }
+    if (columnIndex != 0)
+    {
+        tiles.push_back(&board.tiles[columnIndex - 1][rowIndex]);
+    }
+    if (rowIndex != board.numberOfRows - 1)
+    {
+        tiles.push_back(&board.tiles[columnIndex][rowIndex + 1]);
+    }
+    if (columnIndex != board.numberOfColumns)
+    {
+        tiles.push_back(&board.tiles[columnIndex + 1][rowIndex]);
+    }
+
+    return tiles;
+}
+
+vector<tile *> difference(vector<tile *> &v1, vector<tile *> &v2)
+{
+    vector<tile *> v3;
+
+    set_difference(v1.begin(), v1.end(),
+                   v2.begin(), v2.end(),
+                   inserter(v3, v3.begin()));
+
+    return v3;
+}
+
+vector<tile *> getAdjacentColorTiles(gameBoard &board, const int &columnIndex, const int &rowIndex, const color tileColor, vector<tile *> &colorTiles)
+{
     if (checkIndices(board, columnIndex, rowIndex))
     {
         if (board.tiles[columnIndex][rowIndex].backgroundColor == tileColor)
         {
             colorTiles.push_back(&board.tiles[columnIndex][rowIndex]);
 
-            // Get all adjacent tiles
+            vector<tile *> adjacentTiles = getAdjacentTiles(board, columnIndex, rowIndex);
 
-            // intersect adjacent tiles and colorTiles
+            vector<tile *> tiles = difference(adjacentTiles, colorTiles);
 
-            // call getAdjacentColorTiles for intersection
+            for (tile *gameTile : tiles)
+            {
+                vector<tile *> adjacentColorTiles = getAdjacentColorTiles(board, gameTile->columnPosition, gameTile->rowPosition, tileColor, colorTiles);
 
-            // Adjazente Aufrufe
-            // Aufpassen dass nach tiles[columnIndex+1] nicht beim
-            // rekursiven aufruf dann wieder tiles[columnIndex-1] aufgerufen wird
-            // sonst endlosschleife
+                // return intersection(adjacentColorTiles, colorTiles);
+                // return adjacentColorTiles & colorTiles Intersection
+                // for (tile *colorGameTile : adjacentColorTiles)
+                // {
+                //     colorTiles.push_back(colorGameTile);
+                // }
+            }
         }
-        return colorTiles;
     }
-    else
-    {
-        return colorTiles;
-    }
+    return colorTiles;
+}
+
+vector<tile *> getAdjacentColorTiles(gameBoard &board, const int &columnIndex, const int &rowIndex, const color tileColor)
+{
+    vector<tile *> colorTiles;
+    return getAdjacentColorTiles(board, columnIndex, rowIndex, tileColor, colorTiles);
 }
 
 int changeGameBoard(gameBoard &board, const int &columnIndex, const int &rowIndex)
@@ -191,10 +236,10 @@ int applyInput(const string &input, gameBoard &board)
 
         if (!rowIndexNumber.empty() && std::find_if(rowIndexNumber.begin(), rowIndexNumber.end(), [](unsigned char c) { return !std::isdigit(c); }) == rowIndexNumber.end())
         {
-            int columnIndex = (int)'a' - (int)columnIndexChar;
+            int columnIndex = (int)columnIndexChar - (int)'a';
             int rowIndex = stoi(rowIndexNumber);
 
-            int points = changeGameBoard(board, columnIndex, rowIndex);
+            int points = changeGameBoard(board, columnIndex, rowIndex - 1);
 
             if (points == 0)
             {
@@ -237,14 +282,14 @@ int evaluateInput(const string &input, gameBoard &board)
 
 int main(int argc, char *argv[])
 {
-    string input;
+    string input = "c7";
     gameBoard board = generateGameBoard(9, 9);
 
     printGameBoard(board);
 
-    cout << endl
-         << "Input: ";
-    getline(cin, input);
+    // cout << endl
+    //      << "Input: ";
+    // getline(cin, input);
 
     int result = evaluateInput(input, board);
     int b = 0;
