@@ -280,10 +280,36 @@ int evaluateInput(const string &input, gameBoard &board)
     }
 }
 
+void testSetup(gameBoard &board){
+    board.tiles[2][6].backgroundColor = yellow;
+    board.tiles[2][7].backgroundColor = yellow;
+    board.tiles[2][8].backgroundColor = yellow;
+    board.tiles[1][8].backgroundColor = yellow;
+    board.tiles[0][8].backgroundColor = yellow;
+    board.tiles[0][7].backgroundColor = yellow;
+    board.tiles[0][6].backgroundColor = yellow;
+    board.tiles[1][6].backgroundColor = yellow;
+    board.tiles[3][6].backgroundColor = yellow;
+    board.tiles[4][6].backgroundColor = yellow;
+    board.tiles[5][6].backgroundColor = yellow;
+    board.tiles[5][7].backgroundColor = yellow;
+    board.tiles[5][8].backgroundColor = yellow;
+    board.tiles[4][8].backgroundColor = yellow;
+    board.tiles[3][8].backgroundColor = yellow;
+    board.tiles[2][5].backgroundColor = yellow;
+    board.tiles[2][4].backgroundColor = yellow;
+    board.tiles[1][4].backgroundColor = yellow;
+    board.tiles[5][5].backgroundColor = yellow;
+    // 18 Yellow
+
+}
+
 int main(int argc, char *argv[])
 {
     string input = "c7";
     gameBoard board = generateGameBoard(9, 9);
+
+    testSetup(board);
 
     printGameBoard(board);
 
