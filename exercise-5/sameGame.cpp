@@ -30,6 +30,8 @@ struct gameBoard
     vector<vector<tile>> tiles;
     unsigned int numberOfRows;
     unsigned int numberOfColumns;
+    unsigned int points;
+    unsigned int turns;
 };
 
 void initTiles(vector<tile> &gameTiles, int &columnIndex, bool empty = false)
@@ -265,11 +267,9 @@ int changeGameBoard(gameBoard &board, const int &columnIndex, const int &rowInde
     {
         int colorTileCount = removeAdjacentColorTiles(board, columnIndex, rowIndex, board.tiles[columnIndex][rowIndex].backgroundColor);
 
-        // calculate Points as property in struct
-
         sortGameBoard(board);
 
-        return colorTileCount;
+        return colorTileCount * (colorTileCount - 1);
     }
     else
     {
@@ -297,6 +297,9 @@ int applyInput(const string &input, gameBoard &board)
             }
             else
             {
+                board.points += points;
+                board.turns++;
+
                 return 0;
             }
         }
