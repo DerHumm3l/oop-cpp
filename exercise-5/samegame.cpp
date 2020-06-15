@@ -164,60 +164,37 @@ vector<tile *> getAdjacentTiles(gameBoard &board, const int &columnIndex, const 
     return tiles;
 }
 
-vector<tile *> difference(vector<tile *> &v1, vector<tile *> &v2)
-{
-    vector<tile *> v3;
-
-    set_difference(v1.begin(), v1.end(),
-                   v2.begin(), v2.end(),
-                   inserter(v3, v3.begin()));
-
-    return v3;
-}
-
-vector<tile *> getAdjacentColorTiles(gameBoard &board, const int &columnIndex, const int &rowIndex, const color tileColor, vector<tile *> &colorTiles)
+int removeAdjacentColorTiles(gameBoard &board, const int &columnIndex, const int &rowIndex, const color tileColor)
 {
     if (checkIndices(board, columnIndex, rowIndex))
     {
         if (board.tiles[columnIndex][rowIndex].backgroundColor == tileColor)
         {
-            colorTiles.push_back(&board.tiles[columnIndex][rowIndex]);
+            board.tiles[columnIndex][rowIndex].backgroundColor = black;
 
             vector<tile *> adjacentTiles = getAdjacentTiles(board, columnIndex, rowIndex);
 
-            vector<tile *> tiles = difference(adjacentTiles, colorTiles);
+            int colorTileCount = 0;
 
-            for (tile *gameTile : tiles)
-            {
-                vector<tile *> adjacentColorTiles = getAdjacentColorTiles(board, gameTile->columnPosition, gameTile->rowPosition, tileColor, colorTiles);
-
-                // return intersection(adjacentColorTiles, colorTiles);
-                // return adjacentColorTiles & colorTiles Intersection
-                // for (tile *colorGameTile : adjacentColorTiles)
-                // {
-                //     colorTiles.push_back(colorGameTile);
-                // }
+            for(tile* gameTile : adjacentTiles){
+                colorTileCount += removeAdjacentColorTiles(board, gameTile->columnPosition, gameTile->rowPosition, tileColor);
             }
+
+            return colorTileCount + 1;
         }
     }
-    return colorTiles;
-}
 
-vector<tile *> getAdjacentColorTiles(gameBoard &board, const int &columnIndex, const int &rowIndex, const color tileColor)
-{
-    vector<tile *> colorTiles;
-    return getAdjacentColorTiles(board, columnIndex, rowIndex, tileColor, colorTiles);
+    return 0;
 }
 
 int changeGameBoard(gameBoard &board, const int &columnIndex, const int &rowIndex)
 {
     if (checkIndices(board, columnIndex, rowIndex))
     {
-        vector<tile *> adjacentColorTiles = getAdjacentColorTiles(board, columnIndex, rowIndex, board.tiles[columnIndex][rowIndex].backgroundColor);
+        int colorTileCount = removeAdjacentColorTiles(board, columnIndex, rowIndex, board.tiles[columnIndex][rowIndex].backgroundColor);
 
-        // update GameBoard
         // calculate Points
-        int points = 10;
+        // sort gameboard (gravity)
 
         return points;
     }
@@ -318,7 +295,8 @@ int main(int argc, char *argv[])
     // getline(cin, input);
 
     int result = evaluateInput(input, board);
-    int b = 0;
+
+    printGameBoard(board);
 
     getchar();
 
