@@ -32,23 +32,23 @@ struct gameBoard
     unsigned int numberOfColumns;
 };
 
-void initTiles(vector<tile> &gameTiles, int &columnIndex)
+void initTiles(vector<tile> &gameTiles, int &columnIndex, bool empty = false)
 {
     for (int rowIndex = 0; rowIndex < gameTiles.size(); rowIndex++)
     {
-        gameTiles[rowIndex].backgroundColor = color(rand() % (magenta - black) + red);
+        gameTiles[rowIndex].backgroundColor = empty ? color::black : color(rand() % (magenta - color::black) + red);
         gameTiles[rowIndex].rowPosition = rowIndex;
         gameTiles[rowIndex].columnPosition = columnIndex;
     }
 }
 
-vector<tile> generateColumn(const int &size, int &columnIndex)
+vector<tile> generateColumn(const int &rowCount, int &columnIndex, bool empty = false)
 {
     tile gameTile;
 
-    vector<tile> column(size, gameTile);
+    vector<tile> column(rowCount, gameTile);
 
-    initTiles(column, columnIndex);
+    initTiles(column, columnIndex, empty);
 
     return column;
 }
@@ -130,7 +130,7 @@ bool checkIndices(const gameBoard &board, const int &columnIndex, const int &row
     {
         return false;
     }
-    else if (board.tiles[columnIndex][rowIndex].backgroundColor == black)
+    else if (board.tiles[columnIndex][rowIndex].backgroundColor == color::black)
     {
         return false;
     }
@@ -170,13 +170,14 @@ int removeAdjacentColorTiles(gameBoard &board, const int &columnIndex, const int
     {
         if (board.tiles[columnIndex][rowIndex].backgroundColor == tileColor)
         {
-            board.tiles[columnIndex][rowIndex].backgroundColor = black;
+            board.tiles[columnIndex][rowIndex].backgroundColor = color::black;
 
             vector<tile *> adjacentTiles = getAdjacentTiles(board, columnIndex, rowIndex);
 
             int colorTileCount = 0;
 
-            for(tile* gameTile : adjacentTiles){
+            for (tile *gameTile : adjacentTiles)
+            {
                 colorTileCount += removeAdjacentColorTiles(board, gameTile->columnPosition, gameTile->rowPosition, tileColor);
             }
 
@@ -187,16 +188,88 @@ int removeAdjacentColorTiles(gameBoard &board, const int &columnIndex, const int
     return 0;
 }
 
+bool compareTiles(tile tile1, tile tile2)
+{
+    if (tile1.backgroundColor == color::black || tile2.backgroundColor == color::black)
+    {
+        return tile1.backgroundColor < tile2.backgroundColor;
+    }
+    else
+    {
+        return false;
+    }
+}
+
+void fixIndices(vector<tile> &column, int &columnIndex)
+{
+    for (int rowIndex = 0; rowIndex < column.size(); rowIndex++)
+    {
+        column[rowIndex].rowPosition = rowIndex;
+        column[rowIndex].columnPosition = columnIndex;
+    }
+}
+
+void sortColumn(vector<tile> &column, int &columIndex)
+{
+    sort(column.begin(), column.end(), compareTiles);
+
+    fixIndices(column, columIndex);
+}
+
+void removeEmptyColumns(gameBoard &board)
+{
+    for (int columnIndex = 0; columnIndex < board.tiles.size(); columnIndex++)
+    {
+        bool emptryColumn = true;
+
+        for (tile gameTile : board.tiles[columnIndex])
+        {
+            if (gameTile.backgroundColor != color::black)
+            {
+                emptryColumn = false;
+                break;
+            }
+        }
+
+        if (emptryColumn)
+        {
+            board.tiles.erase(board.tiles.begin() + columnIndex);
+        }
+    }
+}
+
+void addMissingColumns(gameBoard &board)
+{
+    for (int columnCount = board.tiles.size(); columnCount < board.numberOfColumns; columnCount++)
+    {
+        int columnIndex = columnCount - 1;
+        board.tiles.push_back(generateColumn(board.numberOfRows, columnIndex, true));
+    }
+}
+
+void sortGameBoard(gameBoard &board)
+{
+    removeEmptyColumns(board);
+
+    for (int columnIndex = 0; columnIndex < board.tiles.size(); columnIndex++)
+    {
+        sortColumn(board.tiles[columnIndex], columnIndex);
+    }
+
+    addMissingColumns(board);
+}
+
 int changeGameBoard(gameBoard &board, const int &columnIndex, const int &rowIndex)
 {
     if (checkIndices(board, columnIndex, rowIndex))
     {
         int colorTileCount = removeAdjacentColorTiles(board, columnIndex, rowIndex, board.tiles[columnIndex][rowIndex].backgroundColor);
 
-        // calculate Points
-        // sort gameboard (gravity)
+        // calculate Points as property in struct
 
-        return points;
+        sortGameBoard(board);
+
+        return colorTileCount;
     }
     else
     {
@@ -257,7 +330,8 @@ int evaluateInput(const string &input, gameBoard &board)
     }
 }
 
-void testSetup(gameBoard &board){
+void testSetup(gameBoard &board)
+{
     board.tiles[2][6].backgroundColor = yellow;
     board.tiles[2][7].backgroundColor = yellow;
     board.tiles[2][8].backgroundColor = yellow;
@@ -278,7 +352,6 @@ void testSetup(gameBoard &board){
     board.tiles[1][4].backgroundColor = yellow;
     board.tiles[5][5].backgroundColor = yellow;
     // 18 Yellow
-
 }
 
 int main(int argc, char *argv[])
