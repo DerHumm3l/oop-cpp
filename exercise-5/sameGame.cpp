@@ -166,25 +166,45 @@ vector<tile *> getAdjacentTiles(gameBoard &board, const int &columnIndex, const 
     return tiles;
 }
 
+bool tileIsInGroup(gameBoard &board, const int &columnIndex, const int &rowIndex)
+{
+    // implementTileCheck
+
+    return true;
+}
+
+int removeAdjacentColorTiles(gameBoard &board, const int &columnIndex, const int &rowIndex)
+{
+    if (!checkIndices(board, columnIndex, rowIndex))
+    {
+        return -2;
+    }
+    else if (!tileIsInGroup(board, columnIndex, rowIndex))
+    {
+        return -3;
+    }
+    else
+    {
+        return removeAdjacentColorTiles(board, columnIndex, rowIndex, board.tiles[columnIndex][rowIndex].backgroundColor);
+    }
+}
+
 int removeAdjacentColorTiles(gameBoard &board, const int &columnIndex, const int &rowIndex, const color tileColor)
 {
-    if (checkIndices(board, columnIndex, rowIndex))
+    if (board.tiles[columnIndex][rowIndex].backgroundColor == tileColor)
     {
-        if (board.tiles[columnIndex][rowIndex].backgroundColor == tileColor)
+        board.tiles[columnIndex][rowIndex].backgroundColor = color::black;
+
+        vector<tile *> adjacentTiles = getAdjacentTiles(board, columnIndex, rowIndex);
+
+        int colorTileCount = 0;
+
+        for (tile *gameTile : adjacentTiles)
         {
-            board.tiles[columnIndex][rowIndex].backgroundColor = color::black;
-
-            vector<tile *> adjacentTiles = getAdjacentTiles(board, columnIndex, rowIndex);
-
-            int colorTileCount = 0;
-
-            for (tile *gameTile : adjacentTiles)
-            {
-                colorTileCount += removeAdjacentColorTiles(board, gameTile->columnPosition, gameTile->rowPosition, tileColor);
-            }
-
-            return colorTileCount + 1;
+            colorTileCount += removeAdjacentColorTiles(board, gameTile->columnPosition, gameTile->rowPosition, tileColor);
         }
+
+        return colorTileCount + 1;
     }
 
     return 0;
@@ -265,7 +285,7 @@ int changeGameBoard(gameBoard &board, const int &columnIndex, const int &rowInde
 {
     if (checkIndices(board, columnIndex, rowIndex))
     {
-        int colorTileCount = removeAdjacentColorTiles(board, columnIndex, rowIndex, board.tiles[columnIndex][rowIndex].backgroundColor);
+        int colorTileCount = removeAdjacentColorTiles(board, columnIndex, rowIndex);
 
         sortGameBoard(board);
 
@@ -291,9 +311,15 @@ int applyInput(const string &input, gameBoard &board)
 
             int points = changeGameBoard(board, columnIndex, rowIndex - 1);
 
-            if (points == 0)
+            if (points == -2)
             {
+                // Turn off grid
                 return -2;
+            }
+            else if (points == -3)
+            {
+                // Tile not in group
+                return -3;
             }
             else
             {
@@ -373,6 +399,8 @@ int main(int argc, char *argv[])
     int result = evaluateInput(input, board);
 
     printGameBoard(board);
+
+    // Test if turns are available
 
     getchar();
 
