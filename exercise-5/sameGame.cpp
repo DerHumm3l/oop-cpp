@@ -5,6 +5,7 @@
 #include <algorithm>
 #include <cctype>
 #include <iterator>
+#include <ctime>
 
 using namespace std;
 
@@ -158,7 +159,7 @@ vector<tile *> getAdjacentTiles(gameBoard &board, const int &columnIndex, const 
     {
         tiles.push_back(&board.tiles[columnIndex][rowIndex + 1]);
     }
-    if (columnIndex != board.numberOfColumns)
+    if (columnIndex != board.numberOfColumns - 1)
     {
         tiles.push_back(&board.tiles[columnIndex + 1][rowIndex]);
     }
@@ -182,22 +183,6 @@ bool tileIsInGroup(gameBoard &board, const int &columnIndex, const int &rowIndex
     return false;
 }
 
-int removeAdjacentColorTiles(gameBoard &board, const int &columnIndex, const int &rowIndex)
-{
-    if (!checkIndices(board, columnIndex, rowIndex))
-    {
-        return -2;
-    }
-    else if (!tileIsInGroup(board, columnIndex, rowIndex))
-    {
-        return -3;
-    }
-    else
-    {
-        return removeAdjacentColorTiles(board, columnIndex, rowIndex, board.tiles[columnIndex][rowIndex].backgroundColor);
-    }
-}
-
 int removeAdjacentColorTiles(gameBoard &board, const int &columnIndex, const int &rowIndex, const color tileColor)
 {
     if (board.tiles[columnIndex][rowIndex].backgroundColor == tileColor)
@@ -217,6 +202,22 @@ int removeAdjacentColorTiles(gameBoard &board, const int &columnIndex, const int
     }
 
     return 0;
+}
+
+int removeAdjacentColorTiles(gameBoard &board, const int &columnIndex, const int &rowIndex)
+{
+    if (!checkIndices(board, columnIndex, rowIndex))
+    {
+        return -2;
+    }
+    else if (!tileIsInGroup(board, columnIndex, rowIndex))
+    {
+        return -3;
+    }
+    else
+    {
+        return removeAdjacentColorTiles(board, columnIndex, rowIndex, board.tiles[columnIndex][rowIndex].backgroundColor);
+    }
 }
 
 bool compareTiles(tile tile1, tile tile2)
@@ -292,18 +293,16 @@ void sortGameBoard(gameBoard &board)
 
 int changeGameBoard(gameBoard &board, const int &columnIndex, const int &rowIndex)
 {
-    if (checkIndices(board, columnIndex, rowIndex))
-    {
-        int colorTileCount = removeAdjacentColorTiles(board, columnIndex, rowIndex);
+    int colorTileCount = removeAdjacentColorTiles(board, columnIndex, rowIndex);
 
-        sortGameBoard(board);
-
-        return colorTileCount * (colorTileCount - 1);
-    }
-    else
+    if (colorTileCount < 0)
     {
-        return 0;
+        return colorTileCount;
     }
+
+    sortGameBoard(board);
+
+    return colorTileCount * (colorTileCount - 1);
 }
 
 int applyInput(const string &input, gameBoard &board)
@@ -411,24 +410,81 @@ void testSetup(gameBoard &board)
 
 int main(int argc, char *argv[])
 {
-    string input = "c7";
-    gameBoard board = generateGameBoard(9, 9);
+    string restartInput;
 
-    testSetup(board);
+    do
+    {
+        srand(time(0));
+        string input;
 
-    printGameBoard(board);
+        gameBoard board = generateGameBoard(9, 9);
 
-    // cout << endl
-    //      << "Input: ";
-    // getline(cin, input);
+        // testSetup(board);
 
-    int result = evaluateInput(input, board);
+        do
+        {
+            if (!gameBoardPlayable(board))
+            {
+                break;
+            }
 
-    printGameBoard(board);
+            printGameBoard(board);
 
-    // Test if turns are available
+            cout << endl
+                 << "Input: ";
+            std::getline(cin, input);
 
-    getchar();
+            int result = evaluateInput(input, board);
+
+            switch (result)
+            {
+            case 1:
+                cout << "This is Help" << endl
+                     << endl;
+                // Help
+                break;
+            case 0:
+                cout << "This is valid" << endl
+                     << endl;
+                // Valid Turn
+                break;
+            case -1:
+                cout << "this is invalid" << endl
+                     << endl;
+                // invalid input
+                break;
+            case -2:
+                cout << "this is off grid" << endl
+                     << endl;
+                // tile off grid
+                break;
+            case -3:
+                cout << "this is tile not in group" << endl
+                     << endl;
+                // tile not in group
+                break;
+            default:
+                cout << "Unknown error" << endl
+                     << endl;
+                // Unknown Error
+                break;
+            }
+
+        } while (true);
+
+        printGameBoard(board);
+
+        cout << "Das Spiel ist vorbei." << endl
+             << "Sie haben " << board.points << " Punkte in " << board.turns << " Zuegen erreicht." << endl
+             << "Wollen Sie ein neues Spiel starten?" << endl;
+
+        cout << endl
+             << "Input (y/n): ";
+        std::getline(cin, restartInput);
+
+        cout << endl;
+
+    } while (restartInput.compare("y") == 0);
 
     return 0;
 }
