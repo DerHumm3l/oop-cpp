@@ -28,10 +28,10 @@ struct tile
 struct gameBoard
 {
     vector<vector<tile>> tiles;
-    unsigned int numberOfRows;
-    unsigned int numberOfColumns;
-    unsigned int points;
-    unsigned int turns;
+    unsigned int numberOfRows = 0;
+    unsigned int numberOfColumns = 0;
+    unsigned int points = 0;
+    unsigned int turns = 0;
 };
 
 void initTiles(vector<tile> &gameTiles, int &columnIndex, bool empty = false)
@@ -168,9 +168,18 @@ vector<tile *> getAdjacentTiles(gameBoard &board, const int &columnIndex, const 
 
 bool tileIsInGroup(gameBoard &board, const int &columnIndex, const int &rowIndex)
 {
-    // implementTileCheck
+    vector<tile *> adjacentTiles = getAdjacentTiles(board, columnIndex, rowIndex);
+    color tileColor = board.tiles[columnIndex][rowIndex].backgroundColor;
 
-    return true;
+    for (tile *&gameTile : adjacentTiles)
+    {
+        if (gameTile->backgroundColor == tileColor)
+        {
+            return true;
+        }
+    }
+
+    return false;
 }
 
 int removeAdjacentColorTiles(gameBoard &board, const int &columnIndex, const int &rowIndex)
@@ -357,6 +366,23 @@ int evaluateInput(const string &input, gameBoard &board)
     {
         return -1;
     }
+}
+
+bool gameBoardPlayable(gameBoard &board)
+{
+    for (int columnIndex = 0; columnIndex < board.numberOfColumns; columnIndex++)
+    {
+        for (int rowIndex = 0; rowIndex < board.numberOfRows; rowIndex++)
+        {
+            if (board.tiles[columnIndex][rowIndex].backgroundColor != color::black &&
+                tileIsInGroup(board, columnIndex, rowIndex))
+            {
+                return true;
+            }
+        }
+    }
+
+    return false;
 }
 
 void testSetup(gameBoard &board)
