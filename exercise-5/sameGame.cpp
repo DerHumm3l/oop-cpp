@@ -312,7 +312,7 @@ int applyInput(const string &input, gameBoard &board)
         char columnIndexChar = input.at(0);
         string rowIndexNumber = input.substr(1);
 
-        if (!rowIndexNumber.empty() && std::find_if(rowIndexNumber.begin(), rowIndexNumber.end(), [](unsigned char c) { return !std::isdigit(c); }) == rowIndexNumber.end())
+        if (!rowIndexNumber.empty() && find_if(rowIndexNumber.begin(), rowIndexNumber.end(), [](unsigned char c) { return !isdigit(c); }) == rowIndexNumber.end())
         {
             int columnIndex = (int)columnIndexChar - (int)'a';
             int rowIndex = stoi(rowIndexNumber);
@@ -408,6 +408,34 @@ void testSetup(gameBoard &board)
     // 18 Yellow
 }
 
+void printBoardInfo(const gameBoard &board)
+{
+    int turnIndex = board.turns + 1;
+
+    cout << turnIndex << ". Zug    " << board.points << " Punkte" << endl
+         << endl;
+}
+
+void printHelp()
+{
+    cout << endl
+         << "Bei diesen Spiel handelt es sich um eine Version von SameGame mit 9 Spalten und 9 Zeilen." << endl
+         << "Um einen Zug durchzufuehren, muessen Sie den Buchstaben einer Spalte gefolgt von der Zahl fuer die Zeile eingeben und mit Enter bestaetigen." << endl
+         << "Zum Beispiel: \'c9\', \'a5\', usw." << endl
+         << "Es muessen Felder ausgewaehlt werden, bei denen mindestens 2 Felder gleicher Farbe vertikal oder horizontal aneinander angrenzen." << endl
+         << "Wird ein Zug erfolgreich durchgefuehrt, werden die ausgewaehlten Felder entfernt und die Punkte nach der Formel \'n * (n - 1)\' den Punktekonto hinzugefuegt." << endl
+         << "Hierbei steht n fuer die Anzahl der entfernten Felder." << endl
+         << "Das Spiel endet wenn keine Zuege mehr moeglich sind." << endl
+         << "Enter zum fortfahren...";
+
+    getchar();
+}
+
+// To-Do
+// .improve output in switch after turn result
+// .problem with two black rows in one turn
+// .refactor
+
 int main(int argc, char *argv[])
 {
     string restartInput;
@@ -421,66 +449,85 @@ int main(int argc, char *argv[])
 
         // testSetup(board);
 
-        do
+        while (gameBoardPlayable(board))
         {
-            if (!gameBoardPlayable(board))
-            {
-                break;
-            }
+            printBoardInfo(board);
+
+            // if (!gameBoardPlayable(board))
+            // {
+            //     break;
+            // }
 
             printGameBoard(board);
 
             cout << endl
                  << "Input: ";
-            std::getline(cin, input);
+            getline(cin, input);
 
             int result = evaluateInput(input, board);
 
             switch (result)
             {
             case 1:
-                cout << "This is Help" << endl
-                     << endl;
                 // Help
+                printHelp();
                 break;
             case 0:
-                cout << "This is valid" << endl
-                     << endl;
-                // Valid Turn
+                // Valid turn
+                // Do nothing
                 break;
             case -1:
-                cout << "this is invalid" << endl
-                     << endl;
-                // invalid input
+                // Invalid input
+                cout << endl
+                     << "Fehlerhafte Eingabe. Die Zeichenkette konnte nicht in ein Feld umgewandelt werden. (\? fuer Hilfe)" << endl
+                     << "Enter zum fortfahren...";
+
+                getchar();
                 break;
             case -2:
-                cout << "this is off grid" << endl
-                     << endl;
-                // tile off grid
+                // Tile off grid
+                cout << endl
+                     << "Ungueltige Feldeingabe. Bitte waehlen Sie ein Feld innerhalb der dargestellten Grenzen. (\? fuer Hilfe)" << endl
+                     << "Enter zum fortfahren...";
+
+                getchar();
                 break;
             case -3:
-                cout << "this is tile not in group" << endl
-                     << endl;
-                // tile not in group
+                // Tile not in group
+                cout << endl
+                     << "Ungueltiges Feld. Das ausgewaehlte Feld befindet sich nicht in einer Gruppe von Feldern einer Farbe. (\? fuer Hilfe)" << endl
+                     << "Enter zum fortfahren...";
+
+                getchar();
                 break;
             default:
-                cout << "Unknown error" << endl
-                     << endl;
-                // Unknown Error
+                // Unknown error
+                cout << endl
+                     << "Ein Unbekannter Fehler ist aufgetreten." << endl
+                     << "Enter zum fortfahren...";
+
+                getchar();
                 break;
             }
 
-        } while (true);
+            cout << endl;
+            cout << " |" << endl;
+            cout << " |" << endl;
+            cout << " |" << endl;
+            cout << " v" << endl;
+            cout << endl;
+        }
 
         printGameBoard(board);
 
-        cout << "Das Spiel ist vorbei." << endl
+        cout << endl
+             << "Das Spiel ist vorbei." << endl
              << "Sie haben " << board.points << " Punkte in " << board.turns << " Zuegen erreicht." << endl
              << "Wollen Sie ein neues Spiel starten?" << endl;
 
         cout << endl
              << "Input (y/n): ";
-        std::getline(cin, restartInput);
+        getline(cin, restartInput);
 
         cout << endl;
 
