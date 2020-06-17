@@ -80,51 +80,21 @@ string getColor(tile gameTile)
     return "\033[" + to_string(gameTile.backgroundColor) + "m \033[0m";
 }
 
-void printRowSeparator(const gameBoard &board, bool withHeader = false)
-{
-    if (withHeader)
-    {
-        cout << "   ";
-        for (int i = 0; i < board.numberOfColumns; i++)
-        {
-            cout << char(int('a') + i) << " ";
-        }
-
-        cout << endl;
-    }
-
-    cout << "  ";
-
-    for (int i = 0; i < board.numberOfColumns; i++)
-    {
-        cout << "+-";
-    }
-
-    cout << "+" << endl;
-}
-
-void printRow(const gameBoard &board, unsigned int rowIndex)
+bool gameBoardPlayable(gameBoard &board)
 {
     for (int columnIndex = 0; columnIndex < board.numberOfColumns; columnIndex++)
     {
-        cout << "|" << getColor(board.tiles[columnIndex][rowIndex]);
+        for (int rowIndex = 0; rowIndex < board.numberOfRows; rowIndex++)
+        {
+            if (board.tiles[columnIndex][rowIndex].backgroundColor != color::black &&
+                tileIsInGroup(board, columnIndex, rowIndex))
+            {
+                return true;
+            }
+        }
     }
 
-    cout << "|" << endl;
-}
-
-void printGameBoard(const gameBoard &board)
-{
-    printRowSeparator(board, true);
-
-    for (int rowIndex = 0; rowIndex < board.numberOfRows; rowIndex++)
-    {
-        cout << rowIndex + 1 << " ";
-
-        printRow(board, rowIndex);
-
-        printRowSeparator(board);
-    }
+    return false;
 }
 
 bool checkIndices(const gameBoard &board, const int &columnIndex, const int &rowIndex)
@@ -140,6 +110,18 @@ bool checkIndices(const gameBoard &board, const int &columnIndex, const int &row
     else
     {
         return true;
+    }
+}
+
+bool compareTiles(tile tile1, tile tile2)
+{
+    if (tile1.backgroundColor == color::black || tile2.backgroundColor == color::black)
+    {
+        return tile1.backgroundColor < tile2.backgroundColor;
+    }
+    else
+    {
+        return false;
     }
 }
 
@@ -220,18 +202,6 @@ int removeAdjacentColorTiles(gameBoard &board, const int &columnIndex, const int
     }
 }
 
-bool compareTiles(tile tile1, tile tile2)
-{
-    if (tile1.backgroundColor == color::black || tile2.backgroundColor == color::black)
-    {
-        return tile1.backgroundColor < tile2.backgroundColor;
-    }
-    else
-    {
-        return false;
-    }
-}
-
 void fixIndices(vector<tile> &column, int &columnIndex)
 {
     for (int rowIndex = 0; rowIndex < column.size(); rowIndex++)
@@ -266,6 +236,7 @@ void removeEmptyColumns(gameBoard &board)
         if (emptryColumn)
         {
             board.tiles.erase(board.tiles.begin() + columnIndex);
+            columnIndex--;
         }
     }
 }
@@ -367,48 +338,54 @@ int evaluateInput(const string &input, gameBoard &board)
     }
 }
 
-bool gameBoardPlayable(gameBoard &board)
+void printRowSeparator(const gameBoard &board, bool withHeader = false)
+{
+    if (withHeader)
+    {
+        cout << "   ";
+        for (int i = 0; i < board.numberOfColumns; i++)
+        {
+            cout << char(int('a') + i) << " ";
+        }
+
+        cout << endl;
+    }
+
+    cout << "  ";
+
+    for (int i = 0; i < board.numberOfColumns; i++)
+    {
+        cout << "+-";
+    }
+
+    cout << "+" << endl;
+}
+
+void printRow(const gameBoard &board, unsigned int rowIndex)
 {
     for (int columnIndex = 0; columnIndex < board.numberOfColumns; columnIndex++)
     {
-        for (int rowIndex = 0; rowIndex < board.numberOfRows; rowIndex++)
-        {
-            if (board.tiles[columnIndex][rowIndex].backgroundColor != color::black &&
-                tileIsInGroup(board, columnIndex, rowIndex))
-            {
-                return true;
-            }
-        }
+        cout << "|" << getColor(board.tiles[columnIndex][rowIndex]);
     }
 
-    return false;
+    cout << "|" << endl;
 }
 
-void testSetup(gameBoard &board)
+void printGameBoard(const gameBoard &board)
 {
-    board.tiles[2][6].backgroundColor = yellow;
-    board.tiles[2][7].backgroundColor = yellow;
-    board.tiles[2][8].backgroundColor = yellow;
-    board.tiles[1][8].backgroundColor = yellow;
-    board.tiles[0][8].backgroundColor = yellow;
-    board.tiles[0][7].backgroundColor = yellow;
-    board.tiles[0][6].backgroundColor = yellow;
-    board.tiles[1][6].backgroundColor = yellow;
-    board.tiles[3][6].backgroundColor = yellow;
-    board.tiles[4][6].backgroundColor = yellow;
-    board.tiles[5][6].backgroundColor = yellow;
-    board.tiles[5][7].backgroundColor = yellow;
-    board.tiles[5][8].backgroundColor = yellow;
-    board.tiles[4][8].backgroundColor = yellow;
-    board.tiles[3][8].backgroundColor = yellow;
-    board.tiles[2][5].backgroundColor = yellow;
-    board.tiles[2][4].backgroundColor = yellow;
-    board.tiles[1][4].backgroundColor = yellow;
-    board.tiles[5][5].backgroundColor = yellow;
-    // 18 Yellow
+    printRowSeparator(board, true);
+
+    for (int rowIndex = 0; rowIndex < board.numberOfRows; rowIndex++)
+    {
+        cout << rowIndex + 1 << " ";
+
+        printRow(board, rowIndex);
+
+        printRowSeparator(board);
+    }
 }
 
-void printBoardInfo(const gameBoard &board)
+void printGameBoardInfo(const gameBoard &board)
 {
     int turnIndex = board.turns + 1;
 
@@ -431,10 +408,52 @@ void printHelp()
     getchar();
 }
 
-// To-Do
-// .improve output in switch after turn result
-// .problem with two black rows in one turn
-// .refactor
+void printResult(const int &result)
+{
+    switch (result)
+    {
+    case 1:
+        // Help
+        printHelp();
+        break;
+    case 0:
+        // Valid turn
+        // Do nothing
+        break;
+    case -1:
+        // Invalid input
+        cout << endl
+             << "Fehlerhafte Eingabe. Die Zeichenkette konnte nicht in ein Feld umgewandelt werden. (\? fuer Hilfe)" << endl
+             << "Enter zum fortfahren...";
+
+        getchar();
+        break;
+    case -2:
+        // Tile off grid
+        cout << endl
+             << "Ungueltige Feldeingabe. Bitte waehlen Sie ein Feld innerhalb der dargestellten Grenzen. (\? fuer Hilfe)" << endl
+             << "Enter zum fortfahren...";
+
+        getchar();
+        break;
+    case -3:
+        // Tile not in group
+        cout << endl
+             << "Ungueltiges Feld. Das ausgewaehlte Feld befindet sich nicht in einer Gruppe von Feldern einer Farbe. (\? fuer Hilfe)" << endl
+             << "Enter zum fortfahren...";
+
+        getchar();
+        break;
+    default:
+        // Unknown error
+        cout << endl
+             << "Ein Unbekannter Fehler ist aufgetreten." << endl
+             << "Enter zum fortfahren...";
+
+        getchar();
+        break;
+    }
+}
 
 int main(int argc, char *argv[])
 {
@@ -447,16 +466,9 @@ int main(int argc, char *argv[])
 
         gameBoard board = generateGameBoard(9, 9);
 
-        // testSetup(board);
-
         while (gameBoardPlayable(board))
         {
-            printBoardInfo(board);
-
-            // if (!gameBoardPlayable(board))
-            // {
-            //     break;
-            // }
+            printGameBoardInfo(board);
 
             printGameBoard(board);
 
@@ -466,49 +478,7 @@ int main(int argc, char *argv[])
 
             int result = evaluateInput(input, board);
 
-            switch (result)
-            {
-            case 1:
-                // Help
-                printHelp();
-                break;
-            case 0:
-                // Valid turn
-                // Do nothing
-                break;
-            case -1:
-                // Invalid input
-                cout << endl
-                     << "Fehlerhafte Eingabe. Die Zeichenkette konnte nicht in ein Feld umgewandelt werden. (\? fuer Hilfe)" << endl
-                     << "Enter zum fortfahren...";
-
-                getchar();
-                break;
-            case -2:
-                // Tile off grid
-                cout << endl
-                     << "Ungueltige Feldeingabe. Bitte waehlen Sie ein Feld innerhalb der dargestellten Grenzen. (\? fuer Hilfe)" << endl
-                     << "Enter zum fortfahren...";
-
-                getchar();
-                break;
-            case -3:
-                // Tile not in group
-                cout << endl
-                     << "Ungueltiges Feld. Das ausgewaehlte Feld befindet sich nicht in einer Gruppe von Feldern einer Farbe. (\? fuer Hilfe)" << endl
-                     << "Enter zum fortfahren...";
-
-                getchar();
-                break;
-            default:
-                // Unknown error
-                cout << endl
-                     << "Ein Unbekannter Fehler ist aufgetreten." << endl
-                     << "Enter zum fortfahren...";
-
-                getchar();
-                break;
-            }
+            printResult(result);
 
             cout << endl;
             cout << " |" << endl;
