@@ -80,23 +80,6 @@ string getColor(tile gameTile)
     return "\033[" + to_string(gameTile.backgroundColor) + "m \033[0m";
 }
 
-bool gameBoardPlayable(gameBoard &board)
-{
-    for (int columnIndex = 0; columnIndex < board.numberOfColumns; columnIndex++)
-    {
-        for (int rowIndex = 0; rowIndex < board.numberOfRows; rowIndex++)
-        {
-            if (board.tiles[columnIndex][rowIndex].backgroundColor != color::black &&
-                tileIsInGroup(board, columnIndex, rowIndex))
-            {
-                return true;
-            }
-        }
-    }
-
-    return false;
-}
-
 bool checkIndices(const gameBoard &board, const int &columnIndex, const int &rowIndex)
 {
     if (columnIndex >= board.numberOfColumns || rowIndex >= board.numberOfRows)
@@ -159,6 +142,23 @@ bool tileIsInGroup(gameBoard &board, const int &columnIndex, const int &rowIndex
         if (gameTile->backgroundColor == tileColor)
         {
             return true;
+        }
+    }
+
+    return false;
+}
+
+bool gameBoardPlayable(gameBoard &board)
+{
+    for (int columnIndex = 0; columnIndex < board.numberOfColumns; columnIndex++)
+    {
+        for (int rowIndex = 0; rowIndex < board.numberOfRows; rowIndex++)
+        {
+            if (board.tiles[columnIndex][rowIndex].backgroundColor != color::black &&
+                tileIsInGroup(board, columnIndex, rowIndex))
+            {
+                return true;
+            }
         }
     }
 
