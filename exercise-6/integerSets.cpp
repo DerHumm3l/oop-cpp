@@ -115,5 +115,31 @@ int IntegerSet::getValue(int index)
 
 int main(int argc, char *argv[])
 {
+    IntegerSet set(10, 100);
+
+    int input;
+    cin >> input;
+
+    while (input != 0)
+    {
+        if (set.isValid(input))
+            set.add(input);
+
+        cout << "Menge enthaelt " << set.getSize() << " Elemente:" << endl;
+
+        set.print();
+
+        cin >> input;
+    }
+
+    vector<int> integers = set.getElements();
+
+    for (auto &&value : integers)
+    {
+        set.remove(value);
+    }
+
+    cout << (set.isEmpty() ? "Menge ist leer" : "Menge ist nicht leer") << endl;
+
     return 0;
 }
