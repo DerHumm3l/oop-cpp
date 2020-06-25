@@ -22,6 +22,8 @@ public:
     int getSize();
     vector<int> getElements();
     void print();
+    int getIndex(int value);
+    int getValue(int index);
 };
 
 IntegerSet::IntegerSet(int min, int max) : minimum(min), maximum(max), validations(std::max(max - min, 0), false) {}
@@ -35,23 +37,17 @@ bool IntegerSet::isValid(int value)
 
 void IntegerSet::add(int value)
 {
-    int index = value - minimum;
-
-    validations[index] = true;
+    validations[getIndex(value)] = true;
 }
 
 void IntegerSet::remove(int value)
 {
-    int index = value - minimum;
-
-    validations[index] = false;
+    validations[getIndex(value)] = false;
 }
 
 bool IntegerSet::contains(int value)
 {
-    int index = value - minimum;
-
-    return validations[index];
+    return validations[getIndex(value)];
 }
 
 bool IntegerSet::isEmpty()
@@ -90,9 +86,7 @@ vector<int> IntegerSet::getElements()
     {
         if (validations[i])
         {
-            int value = i + minimum;
-
-            integers.push_back(value);
+            integers.push_back(getValue(i));
         }
     }
 
@@ -107,6 +101,16 @@ void IntegerSet::print()
     {
         cout << value << endl;
     }
+}
+
+int IntegerSet::getIndex(int value)
+{
+    return value - minimum;
+}
+
+int IntegerSet::getValue(int index)
+{
+    return index + minimum;
 }
 
 int main(int argc, char *argv[])
