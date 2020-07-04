@@ -140,11 +140,11 @@ private:
 
 public:
     Track();
-    // Track(vector<Trackpoint> points);
-    // Track(const Track &t);
+    Track(vector<Trackpoint> points);
+    Track(const Track &t);
     virtual ~Track();
-    // vector<Trackpoint> getTrackpoints();
-    // void setTrackpoints(vector<Trackpoint>)
+    vector<Trackpoint> getTrackpoints();
+    void setTrackpoints(vector<Trackpoint>);
     // virtual void print();
     // virtual void append();
     // virtual double averageAltitude();
@@ -154,10 +154,30 @@ public:
 
 Track::Track() {}
 
+Track::Track(vector<Trackpoint> points)
+{
+    trackpoints = points;
+}
+
+Track::Track(const Track &t)
+{
+    trackpoints = t.trackpoints;
+}
+
 Track::~Track() {}
 
+vector<Trackpoint> Track::getTrackpoints()
+{
+    return trackpoints;
+}
+
+void Track::setTrackpoints(vector<Trackpoint> points)
+{
+    trackpoints = points;
+}
+
 // To-Do
-// - Add Getter,Setter,Copy-Constructor and constructor for Track-Class
+// x Add Getter,Setter,Copy-Constructor and constructor for Track-Class
 // - Add Implementation for print methods
 // - Add Implementation for other Track-methods
 // - Add main loop
