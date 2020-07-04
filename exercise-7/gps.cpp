@@ -1,5 +1,7 @@
 #include <string>
 #include <vector>
+#include <iostream>
+#include <ctime>
 
 using namespace std;
 
@@ -21,7 +23,7 @@ public:
     void setLongitude(int lon);
     double getLatitude();
     void setLatitude(int lat);
-    // virtual void print();
+    virtual void print();
 };
 
 Position::Position() {}
@@ -67,6 +69,11 @@ void Position::setLatitude(int lat)
     latitude = lat;
 }
 
+void Position::print()
+{
+    cout << "Höhe: " << altitude << " Laengengrad: " << longitude << " Breitengrad: " << latitude << endl;
+}
+
 class Waypoint : public Position
 {
 private:
@@ -79,7 +86,7 @@ public:
     virtual ~Waypoint();
     string getName();
     void setName(string s);
-    // virtual void print();
+    virtual void print();
 };
 
 Waypoint::Waypoint() {}
@@ -100,37 +107,47 @@ void Waypoint::setName(string s)
     name = s;
 }
 
+void Waypoint::print()
+{
+    cout << "Höhe: " << altitude << " Laengengrad: " << longitude << " Breitengrad: " << latitude << " Name: " << name << endl;
+}
+
 class Trackpoint : public Position
 {
 private:
-    int time;
+    time_t time;
 
 public:
     Trackpoint();
-    Trackpoint(double alt, double lon, double lat, int t);
+    Trackpoint(double alt, double lon, double lat, time_t t);
     Trackpoint(const Trackpoint &trackpoint);
     virtual ~Trackpoint();
-    int getTime();
-    void setTime(int t);
-    // virtual void print();
+    time_t getTime();
+    void setTime(time_t t);
+    virtual void print();
 };
 
 Trackpoint::Trackpoint() {}
 
-Trackpoint::Trackpoint(double alt, double lon, double lat, int t) : Position(alt, lon, lat), time(t) {}
+Trackpoint::Trackpoint(double alt, double lon, double lat, time_t t) : Position(alt, lon, lat), time(t) {}
 
 Trackpoint::Trackpoint(const Trackpoint &trackpoint) : Position(trackpoint), time(trackpoint.time) {}
 
 Trackpoint::~Trackpoint() {}
 
-int Trackpoint::getTime()
+time_t Trackpoint::getTime()
 {
     return time;
 }
 
-void Trackpoint::setTime(int t)
+void Trackpoint::setTime(time_t t)
 {
     time = t;
+}
+
+void Trackpoint::print()
+{
+    cout << "Höhe: " << altitude << " Laengengrad: " << longitude << " Breitengrad: " << latitude << " Zeitpunkt: " << time << endl;
 }
 
 class Track
@@ -145,7 +162,7 @@ public:
     virtual ~Track();
     vector<Trackpoint> getTrackpoints();
     void setTrackpoints(vector<Trackpoint>);
-    // virtual void print();
+    virtual void print();
     // virtual void append();
     // virtual double averageAltitude();
     // virtual void read();
@@ -176,9 +193,17 @@ void Track::setTrackpoints(vector<Trackpoint> points)
     trackpoints = points;
 }
 
+void Track::print()
+{
+    for (auto &&trackpoint : trackpoints)
+    {
+        trackpoint.print();
+    }
+}
+
 // To-Do
 // x Add Getter,Setter,Copy-Constructor and constructor for Track-Class
-// - Add Implementation for print methods
+// x Add Implementation for print methods
 // - Add Implementation for other Track-methods
 // - Add main loop
 // - Clean
