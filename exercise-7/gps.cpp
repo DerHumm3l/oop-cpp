@@ -5,6 +5,7 @@
 #include <fstream>
 #include <algorithm>
 #include <iterator>
+#include <iomanip>
 
 using namespace std;
 
@@ -19,6 +20,15 @@ void split(const string &s, vector<string> &container, char delimiter = ' ')
         current = s.find(delimiter, previous);
     }
     container.push_back(s.substr(previous, current - previous));
+}
+
+time_t convertTime(int time1980)
+{
+    const int DIFFERENCE = 315878400;
+
+    time_t date(time1980 + DIFFERENCE);
+
+    return date;
 }
 
 class Position
@@ -131,7 +141,7 @@ void Waypoint::print()
 class Trackpoint : public Position
 {
 private:
-    time_t time;
+    int time;
 
 public:
     Trackpoint();
@@ -155,8 +165,8 @@ Trackpoint::Trackpoint(const string &line)
     split(line, properties);
 
     altitude = stod(properties[2]);
-    longitude = stod(properties[0]);
-    latitude = stod(properties[1]);
+    longitude = stod(properties[1]);
+    latitude = stod(properties[0]);
     time = stoi(properties[3]);
 }
 
@@ -176,7 +186,9 @@ void Trackpoint::setTime(int t)
 
 void Trackpoint::print()
 {
-    cout << "Höhe: " << altitude << " Laengengrad: " << longitude << " Breitengrad: " << latitude << " Zeitpunkt: " << time << endl;
+    time_t date = convertTime(time);
+
+    cout << "Höhe: " << altitude << " Laengengrad: " << longitude << " Breitengrad: " << latitude << " Zeitpunkt: " << put_time(gmtime(&date), "%c %Z") << endl;
 }
 
 class Track
@@ -275,15 +287,16 @@ void Track::write(const string fileName)
         file << trackpoint.getLongitude() << " " << trackpoint.getLatitude() << " " << trackpoint.getAltitude() << " " << trackpoint.getTime() << endl;
     }
 
-    file.close();
+    file.close()
 }
 
 // To-Do
 // x Add Getter,Setter,Copy-Constructor and constructor for Track-Class
 // x Add Implementation for print methods
 // x Add Implementation for other Track-methods
-// - Get track property time to work
+// x Get track property time to work
 // - Add main loop
+// - Change to latitude, longitude, altitude constructors
 // - Clean
 
 int main(int argc, char *argv[])
@@ -295,10 +308,17 @@ int main(int argc, char *argv[])
     Trackpoint tp1(30, 30, 300, 400);
     Trackpoint tp2(20, 20, 200, 300);
 
-    Track t1("track.txt");
+    Track t1("exercise-7\\bin\\track.txt");
 
     t1.append(tp1);
     t1.append(tp2);
+
+    time_t testDate = convertTime(t1.getTrackpoints()[0].getTime());
+    time_t testDate2 = convertTime(0);
+
+    cout << put_time(gmtime(&testDate), "%c %Z") << endl;
+    cout << put_time(gmtime(&testDate2), "%c %Z") << endl;
+    cout << put_time(gmtime(&testDate2), "%c %Z") << endl;
 
     t1.write("track_updated.txt");
 
