@@ -2,8 +2,24 @@
 #include <vector>
 #include <iostream>
 #include <ctime>
+#include <fstream>
+#include <algorithm>
+#include <iterator>
 
 using namespace std;
+
+void split(const string &s, vector<string> &container, char delimiter = ' ')
+{
+    size_t current, previous = 0;
+    current = s.find(delimiter);
+    while (current != std::string::npos)
+    {
+        container.push_back(s.substr(previous, current - previous));
+        previous = current + 1;
+        current = s.find(delimiter, previous);
+    }
+    container.push_back(s.substr(previous, current - previous));
+}
 
 class Position
 {
@@ -119,28 +135,41 @@ private:
 
 public:
     Trackpoint();
-    Trackpoint(double alt, double lon, double lat, time_t t);
+    Trackpoint(double alt, double lon, double lat, int t);
+    Trackpoint(const string &line);
     Trackpoint(const Trackpoint &trackpoint);
     virtual ~Trackpoint();
-    time_t getTime();
-    void setTime(time_t t);
+    int getTime();
+    void setTime(int t);
     virtual void print();
 };
 
 Trackpoint::Trackpoint() {}
 
-Trackpoint::Trackpoint(double alt, double lon, double lat, time_t t) : Position(alt, lon, lat), time(t) {}
+Trackpoint::Trackpoint(double alt, double lon, double lat, int t) : Position(alt, lon, lat), time(t) {}
+
+Trackpoint::Trackpoint(const string &line)
+{
+    vector<string> properties;
+
+    split(line, properties);
+
+    altitude = stod(properties[2]);
+    longitude = stod(properties[0]);
+    latitude = stod(properties[1]);
+    time = stoi(properties[3]);
+}
 
 Trackpoint::Trackpoint(const Trackpoint &trackpoint) : Position(trackpoint), time(trackpoint.time) {}
 
 Trackpoint::~Trackpoint() {}
 
-time_t Trackpoint::getTime()
+int Trackpoint::getTime()
 {
     return time;
 }
 
-void Trackpoint::setTime(time_t t)
+void Trackpoint::setTime(int t)
 {
     time = t;
 }
@@ -158,28 +187,28 @@ private:
 public:
     Track();
     Track(vector<Trackpoint> points);
+    Track(const string &fileName);
     Track(const Track &t);
     virtual ~Track();
     vector<Trackpoint> getTrackpoints();
     void setTrackpoints(vector<Trackpoint>);
     virtual void print();
-    // virtual void append();
-    // virtual double averageAltitude();
-    // virtual void read();
-    // virtual void write();
+    virtual void append(Trackpoint point);
+    virtual double getAverageAltitude();
+    virtual void read(const string fileName);
+    virtual void write(const string fileName);
 };
 
 Track::Track() {}
 
-Track::Track(vector<Trackpoint> points)
+Track::Track(vector<Trackpoint> points) : trackpoints(points) {}
+
+Track::Track(const string &fileName)
 {
-    trackpoints = points;
+    read(fileName);
 }
 
-Track::Track(const Track &t)
-{
-    trackpoints = t.trackpoints;
-}
+Track::Track(const Track &t) : trackpoints(t.trackpoints) {}
 
 Track::~Track() {}
 
@@ -201,18 +230,77 @@ void Track::print()
     }
 }
 
+void Track::append(Trackpoint point)
+{
+    trackpoints.push_back(point);
+}
+
+double Track::getAverageAltitude()
+{
+    double altitudeSum = 0;
+
+    for (auto &&trackpoint : trackpoints)
+    {
+        altitudeSum += trackpoint.getAltitude();
+    }
+
+    return altitudeSum / trackpoints.size();
+}
+
+void Track::read(const string fileName)
+{
+    vector<Trackpoint> fileTrackpoints;
+    string line;
+    ifstream file;
+
+    file.open(fileName);
+
+    while (getline(file, line))
+    {
+        Trackpoint trackpoint(line);
+        fileTrackpoints.push_back(trackpoint);
+    }
+
+    trackpoints = fileTrackpoints;
+}
+
+void Track::write(const string fileName)
+{
+    ofstream file;
+
+    file.open(fileName);
+
+    for (auto &&trackpoint : trackpoints)
+    {
+        file << trackpoint.getLongitude() << " " << trackpoint.getLatitude() << " " << trackpoint.getAltitude() << " " << trackpoint.getTime() << endl;
+    }
+
+    file.close();
+}
+
 // To-Do
 // x Add Getter,Setter,Copy-Constructor and constructor for Track-Class
 // x Add Implementation for print methods
-// - Add Implementation for other Track-methods
+// x Add Implementation for other Track-methods
+// - Get track property time to work
 // - Add main loop
 // - Clean
 
 int main(int argc, char *argv[])
 {
-    Waypoint w1(100, 20, 30, "Hallo");
-    Waypoint w2(200, -20, 1.5, "Im new");
-    Waypoint w3(w2);
+    Waypoint wp1(100, 20, 30, "Hallo");
+    Waypoint wp2(200, -20, 1.5, "Im new");
+    Waypoint wp3(wp2);
+
+    Trackpoint tp1(30, 30, 300, 400);
+    Trackpoint tp2(20, 20, 200, 300);
+
+    Track t1("track.txt");
+
+    t1.append(tp1);
+    t1.append(tp2);
+
+    t1.write("track_updated.txt");
 
     return 0;
 }
