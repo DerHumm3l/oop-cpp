@@ -97,7 +97,7 @@ void Position::setLatitude(int lat)
 
 void Position::print()
 {
-    cout << "Höhe: " << altitude << " Laengengrad: " << longitude << " Breitengrad: " << latitude << endl;
+    cout << "Hoehe: " << altitude << " Laengengrad: " << longitude << " Breitengrad: " << latitude << endl;
 }
 
 class Waypoint : public Position
@@ -135,7 +135,7 @@ void Waypoint::setName(string s)
 
 void Waypoint::print()
 {
-    cout << "Höhe: " << altitude << " Laengengrad: " << longitude << " Breitengrad: " << latitude << " Name: " << name << endl;
+    cout << "Hoehe: " << altitude << " Laengengrad: " << longitude << " Breitengrad: " << latitude << " Name: " << name << endl;
 }
 
 class Trackpoint : public Position
@@ -188,7 +188,7 @@ void Trackpoint::print()
 {
     time_t date = convertTime(time);
 
-    cout << "Höhe: " << altitude << " Laengengrad: " << longitude << " Breitengrad: " << latitude << " Zeitpunkt: " << put_time(gmtime(&date), "%c %Z") << endl;
+    cout << "Hoehe: " << altitude << " Laengengrad: " << longitude << " Breitengrad: " << latitude << " Zeitpunkt: " << put_time(gmtime(&date), "%c %Z") << endl;
 }
 
 class Track
@@ -287,7 +287,7 @@ void Track::write(const string fileName)
         file << trackpoint.getLongitude() << " " << trackpoint.getLatitude() << " " << trackpoint.getAltitude() << " " << trackpoint.getTime() << endl;
     }
 
-    file.close()
+    file.close();
 }
 
 // To-Do
@@ -295,30 +295,62 @@ void Track::write(const string fileName)
 // x Add Implementation for print methods
 // x Add Implementation for other Track-methods
 // x Get track property time to work
-// - Add main loop
+// x Add main loop
 // - Change to latitude, longitude, altitude constructors
 // - Clean
 
 int main(int argc, char *argv[])
 {
-    Waypoint wp1(100, 20, 30, "Hallo");
-    Waypoint wp2(200, -20, 1.5, "Im new");
-    Waypoint wp3(wp2);
+    Position p1(100, 100, 100);
+
+    Position p2(p1);
+    p2.setAltitude(200);
+
+    cout << "Position 1: " << endl;
+    p1.print();
+    cout << "Position 2: " << endl;
+    p2.print();
+
+    cout << endl;
+
+    Waypoint wp1(100, 20, 30, "Start");
+
+    Waypoint wp2(wp1);
+    wp2.setLongitude(wp1.getLongitude() + 100);
+    wp2.setName("Ende");
+
+    cout << "Wegpunkt 1: " << endl;
+    wp1.print();
+    cout << "Wegpunkt 2: " << endl;
+    wp2.print();
+
+    cout << endl;
 
     Trackpoint tp1(30, 30, 300, 400);
     Trackpoint tp2(20, 20, 200, 300);
 
-    Track t1("exercise-7\\bin\\track.txt");
+    cout << "Trackpunkt 1: " << endl;
+    tp1.print();
+    cout << "Trackpunkt 2: " << endl;
+    tp2.print();
+
+    cout << endl;
+
+    cout << "Versuche track.txt Daten zu laden" << endl;
+
+    Track t1("track.txt");
+
+    cout << endl;
+    cout << "Durchschnittliche Hoehe betraegt " << t1.getAverageAltitude() << " Meter." << endl;
+
+    cout << endl;
+    cout << "Anhaengen von tp1 und tp2 an track" << endl;
 
     t1.append(tp1);
     t1.append(tp2);
 
-    time_t testDate = convertTime(t1.getTrackpoints()[0].getTime());
-    time_t testDate2 = convertTime(0);
-
-    cout << put_time(gmtime(&testDate), "%c %Z") << endl;
-    cout << put_time(gmtime(&testDate2), "%c %Z") << endl;
-    cout << put_time(gmtime(&testDate2), "%c %Z") << endl;
+    cout << endl;
+    cout << "Speichern des tracks in track_updated.txt" << endl;
 
     t1.write("track_updated.txt");
 
