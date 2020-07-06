@@ -290,15 +290,6 @@ void Track::write(const string fileName)
     file.close();
 }
 
-// To-Do
-// x Add Getter,Setter,Copy-Constructor and constructor for Track-Class
-// x Add Implementation for print methods
-// x Add Implementation for other Track-methods
-// x Get track property time to work
-// x Add main loop
-// - Change to latitude, longitude, altitude constructors
-// - Clean
-
 int main(int argc, char *argv[])
 {
     Position p1(100, 100, 100);
